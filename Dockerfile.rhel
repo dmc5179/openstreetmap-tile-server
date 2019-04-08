@@ -145,11 +145,12 @@ RUN scripts/get-shapefiles.py
 
 # Install fonts
 USER root
-RUN yum -y install \
-  fonts-noto-cjk \
-  fonts-noto-hinted \
-  fonts-noto-unhinted \
-  ttf-unifont
+RUN yum -y install google-noto-sans-hanunno-fonts.noarch
+#RUN yum -y install \
+#  fonts-noto-cjk \
+#  fonts-noto-hinted \
+#  fonts-noto-unhinted \
+#  ttf-unifont
 USER renderer
 
 # Configure renderd
@@ -164,9 +165,9 @@ RUN mkdir /var/lib/mod_tile
 RUN chown renderer /var/lib/mod_tile
 RUN mkdir /var/run/renderd
 RUN chown renderer /var/run/renderd
-RUN echo "LoadModule tile_module /usr/lib/apache2/modules/mod_tile.so" >> /etc/apache2/conf-available/mod_tile.conf
-RUN a2enconf mod_tile
-COPY apache.conf /etc/apache2/sites-available/000-default.conf
+RUN echo "LoadModule tile_module" >> /etc/httpd/conf.modules.d/mod_tile.conf
+#RUN a2enconf mod_tile
+#COPY apache.conf /etc/apache2/sites-available/000-default.conf
 USER renderer
 
 # Install PostgreSQL
@@ -174,13 +175,13 @@ USER root
 RUN yum -y install \
   postgresql \
   postgresql-contrib \
-  postgis \
-  postgresql-10-postgis-2.4
+  postgis 
+#  postgresql-10-postgis-2.4
 USER renderer
 
 # Start running
 USER root
-RUN apt-get install -y sudo
+RUN yum -y install sudo
 COPY run.sh /
 ENTRYPOINT ["/run.sh"]
 CMD []
